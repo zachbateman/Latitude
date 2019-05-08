@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import pandas as pd
 
 Begdate = "05/02/2019"
 Enddate= "05/07/2019"
@@ -39,6 +40,14 @@ table = driver.find_element_by_xpath('//*[@id="content"]/div/div[3]/table/tbody'
 table2 = driver.find_elements_by_xpath('//*[@id="content"]/div/div[3]/table/tbody/tr')
 rows = table.find_elements_by_tag_name("tr")
 print(rows)
+x= []
 for row in rows:
 	print([td.text for td in row.find_elements_by_tag_name("td")])
-	
+	a = [td.text for td in row.find_elements_by_tag_name("td")]
+	#dictionary = dict(zip(a,a))
+	#print(dictionary)	
+	x.append(a)
+
+df = pd.DataFrame(x)
+print(df)
+
