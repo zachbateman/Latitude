@@ -12,7 +12,7 @@ element = driver.find_element_by_xpath('//*[@id="username"]')
 element.send_keys("camoruso")
 
 element = driver.find_element_by_xpath('//*[@id="password"]')
-element.send_keys("Heavyrain19!")
+element.send_keys("*****")
 
 element = driver.find_element_by_xpath('//*[@id="frmLogin"]/table[1]/tbody/tr[3]/td/input')
 element.send_keys(Keys.RETURN)
