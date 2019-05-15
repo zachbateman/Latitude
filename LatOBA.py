@@ -14,18 +14,16 @@ loc2 = ('S:\OPERATIONS & ENGINEERING\Well DR Pressure\Dashboard - Wells.xlsm')
 sheetname = "WS Alt Data"
 
 #login Info from local file
-F1 = open("C:\\Users\camoruso\Desktop\password.txt", "r")
-contents = F1.readlines()
-username = contents[0]
-password = contents[1]
-F1.close()
+with open("C:\\Users\camoruso\Desktop\password.txt", "r") as login_file:
+    contents = login_file.readlines()
+    username = contents[0]
+    password = contents[1]
 
 #Open Worksheet with Pandas
 wellsdf = pd.read_excel(loc2, sheet_name = sheetname)
-Excelrowcount = len(wellsdf.index)
+Excelrowcount = len(wellsdf)
 columns = wellsdf.columns
-column = columns[0]
-Datelist = wellsdf[column].tolist()
+Datelist = wellsdf[columns[0]].tolist()
 last = len(Datelist)
 lastdate = Datelist[last-1]
 
@@ -73,7 +71,7 @@ table = driver.find_element_by_xpath('//*[@id="content"]/div/div[3]/table/tbody'
 #table2 = driver.find_elements_by_xpath('//*[@id="content"]/div/div[3]/table/tbody/tr')
 rows = table.find_elements_by_tag_name("tr")
 
-x= []
+x = []
 for row in rows:
 	x.append([td.text for td in row.find_elements_by_tag_name("td")])
 
@@ -84,7 +82,7 @@ driver.close()
 driver.quit()
 
 #Count number of rows copied over
-obadatarows = len(OBAdf.index)
+obadatarows = len(OBAdf)
 #print(df[1:numrows2-1])
 
 #Change dataframe to chop off header and total row
@@ -95,14 +93,14 @@ print(OBAdf2.dtypes)
 #	OBAdf2[col] = OBAdf2[col].apply(pd.to_numeric)
 	#convert_object(convert_numeric = True)
 #print(OBAdf2.dtypes)
-	
+
 #output
 #print(df[1:numrows2])
 #writer = pd.Excelwriter(loc2)
 #Write to excel after the number of entries from origina numrows (Excel sheet count)
 #with pd.ExcelWriter(loc2) as writer:
 #	OBAdf2.to_excel(writer,sheetname,startrow=Excelrowcount+2)
-#	writer.save	
+#	writer.save
 
 outputfile = ('S:\OPERATIONS & ENGINEERING\Well DR Pressure\OBA.xlsx')
 OBAdf2.to_excel(outputfile)
