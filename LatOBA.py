@@ -40,8 +40,7 @@ else:
 	Begdate = "05/02/2019"
 	Enddate= "05/07/2019"
 
-driver = webdriver.Chrome()
-#"C:\Users\camoruso\Documents\Helpful Docs\Programming")
+driver = webdriver.Chrome('C:\\Users\camoruso\Documents\Helpful Docs\Programming\chromedriver.exe')
 driver.get('https://www.gasstorage.net/WORSHAMSTEED/Operator/index.cfm')
 
 element = driver.find_element_by_xpath('//*[@id="username"]')
@@ -87,8 +86,9 @@ obadatarows = len(OBAdf)
 
 #Change dataframe to chop off header and total row
 OBAdf2 = OBAdf[1:obadatarows-1]
-print(OBAdf2.dtypes)
 
+
+#print(OBAdf2.dtypes)
 #for col in OBAdf2.columns[2:]:
 #	OBAdf2[col] = OBAdf2[col].apply(pd.to_numeric)
 	#convert_object(convert_numeric = True)
@@ -102,18 +102,33 @@ print(OBAdf2.dtypes)
 #	OBAdf2.to_excel(writer,sheetname,startrow=Excelrowcount+2)
 #	writer.save
 
-outputfile = ('S:\OPERATIONS & ENGINEERING\Well DR Pressure\OBA.xlsx')
-OBAdf2.to_excel(outputfile)
-print(OBAdf2.values.tolist())
+#outputfile = ('S:\OPERATIONS & ENGINEERING\Well DR Pressure\OBA.xlsx')
+#OBAdf2.to_excel(outputfile)
+#print(OBAdf2.values.tolist())
 
 wb = openpyxl.load_workbook(loc2,keep_vba=True)
-ws = wb.get_sheet_by_name(sheetname)
-wb2 = openpyxl.load_workbook(outputfile)
-ws2 = wb2.worksheets[0]
+ws = wb[sheetname]
+#wb2 = openpyxl.load_workbook(outputfile)
+#ws2 = wb2.worksheets[0]
 
+obalist = OBAdf2.values.tolist()
 for i in range(2,obadatarows):
 	for j in range(1,6):
-			ws.cell(Excelrowcount+i,j).value = (ws2.cell(i,j+1).value)
-			print(ws2.cell(i,j+1).value)
+			if j == 1:		#Catch Date column here
+				try:		#Convert to Datetime string
+					ws.cell(Excelrowcount+i,j).value = datetime.datetime.strptime(obalist[i-2][j-1],'%m/%d/%y')
+				except:	#Any errors converting datetime will just paste as string into Excel
+					ws.cell(Excelrowcount+i,j).value = obalist[i-2][j-1]
+			else:
+				try:		#Convert string to float
+					#print(3)
+					a = obalist[i-2][j-1].replace(",", "")
+					ws.cell(Excelrowcount+i,j).value = int(a)
+				except:
+					#print(4)
+					ws.cell(Excelrowcount+i,j).value = obalist[i-2][j-1]
+					#ws.cell(Excelrowcount+i,j).value = 
+				#ws.cell(Excelrowcount+i,j).value = (ws2.cell(i,j+1).value)
+				#print(ws2.cell(i,j+1).value)
 
 wb.save(loc2)
